@@ -107,3 +107,18 @@ Query parameters must use HEX dump, e.g.,
 data=$(echo -n "tendermint" | xxd -pu)
 curl --header "Content-Type: application/json" --request POST --data '{"method": "abci_query", "params": {"data": "'${data}'"}, "id": 2}' localhost:26657
 ```
+
+## Subscribe block events using websocket
+
+Install `wscat`
+
+```bash
+npm install -g wscat
+```
+
+Start `wscat` and connect to a full tendermint node, then subscribe `NewBlock` events
+
+```bash
+wscat --connect ws://localhost:26657/websocket
+{ "jsonrpc": "2.0", "method": "subscribe", "params": ["tm.event='NewBlock'"], "id": 1 }
+```
