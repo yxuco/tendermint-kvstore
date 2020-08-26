@@ -89,3 +89,21 @@ Shutdown Tendermint node and kvstore app from the previous testing. Restart the 
 ```
 
 The built-in app itself is a full Tendermint node. From another terminal, send new transaction and query similar the previous tests.
+
+## Send transaction and query using JSON-RPC
+
+When sending transaction and queries using JSON-RPC, instead of OpenAPI in the previous steps, you need to encode the data carefully as required by the app.
+
+Transaction parameters must use base64 encoding, e.g.,
+
+```bash
+tx=$(echo -n "tendermint=jsonrpc" | base64)
+curl --header "Content-Type: application/json" --request POST --data '{"method": "broadcast_tx_commit", "params": {"tx": "'${tx}'"}, "id": 1}' localhost:26657
+```
+
+Query parameters must use HEX dump, e.g.,
+
+```bash
+data=$(echo -n "tendermint" | xxd -pu)
+curl --header "Content-Type: application/json" --request POST --data '{"method": "abci_query", "params": {"data": "'${data}'"}, "id": 2}' localhost:26657
+```
